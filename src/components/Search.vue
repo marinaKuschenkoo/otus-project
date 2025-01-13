@@ -36,10 +36,9 @@ foundItems.value = computed(() => {
   const searchLower = searchValue?.value.toLowerCase();
   return props?.items?.filter((el) => {
     const matchesTitle = el.title.toLowerCase().startsWith(searchLower);
-    const matchesPriceStart = price.priceStart
-      ? el.price > price.priceStart
-      : true;
-    const matchesPriceEnd = price.priceEnd ? el.price < price.priceEnd : true;
+
+    const matchesPriceStart = !price.priceStart || el.price > price.priceStart;
+    const matchesPriceEnd = !price.priceEnd || el.price < price.priceEnd;
 
     return matchesTitle && matchesPriceStart && matchesPriceEnd;
   });

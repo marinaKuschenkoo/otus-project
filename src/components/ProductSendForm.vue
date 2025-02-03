@@ -1,135 +1,133 @@
 <template>
-  <Popup @close="closePopup()" title="Форма отправки заказа">
-    <form>
-      <div class="row">
-        <base-input
-          class="input"
-          placeholder="Фамилия"
-          name="lastName"
-          v-model:inputValue="user.lastName"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('lastName', text);
-            }
-          "
-        />
-        <base-input
-          class="input"
-          name="name"
-          placeholder="Имя"
-          v-model:inputValue="user.name"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('name', text);
-            }
-          "
-        />
-        <base-input
-          class="input"
-          placeholder="Отчество"
-          name="middleName"
-          v-model:inputValue="user.middleName"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('middleName', text);
-            }
-          "
-        />
-      </div>
+  <form>
+    <div class="row">
       <base-input
         class="input"
-        type="date"
-        name="birthDate"
-        placeholder="Дата рождения"
-        v-model:inputValue="user.birthDate"
+        placeholder="Фамилия"
+        name="lastName"
+        v-model:inputValue="user.lastName"
         @update:errorMessage="
           (text) => {
-            onErrorMessageUpdate('birthDate', text);
+            onErrorMessageUpdate('lastName', text);
           }
         "
       />
-      <div class="row">
-        <base-input
-          class="input"
-          name="city"
-          placeholder="Город"
-          v-model:inputValue="user.city"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('city', text);
-            }
-          "
-        />
-        <base-input
-          class="input"
-          name="street"
-          placeholder="Улица"
-          v-model:inputValue="user.street"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('street', text);
-            }
-          "
-        />
-        <base-input
-          class="input"
-          name="house"
-          placeholder="Дом"
-          v-model:inputValue="user.house"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('house', text);
-            }
-          "
-        />
-      </div>
       <base-input
         class="input"
-        name="cardNumber"
-        placeholder="Номер карты"
-        v-model:inputValue="user.card.number"
+        name="name"
+        placeholder="Имя"
+        v-model:inputValue="user.name"
         @update:errorMessage="
           (text) => {
-            onErrorMessageUpdate('cardNumber', text);
+            onErrorMessageUpdate('name', text);
           }
         "
       />
-      <div class="row start">
-        <base-input
-          class="input"
-          placeholder="ММ"
-          name="monthExp"
-          v-model:inputValue="user.card.monthExp"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('monthExp', text);
-            }
-          "
-        /><base-input
-          name="yearExp"
-          v-model:inputValue="user.card.yearExp"
-          placeholder="ГГ"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('yearExp', text);
-            }
-          "
-        />
-        <base-input
-          class="input"
-          placeholder="CVC"
-          name="yearExp"
-          v-model:inputValue="user.card.cvc"
-          @update:errorMessage="
-            (text) => {
-              onErrorMessageUpdate('cvc', text);
-            }
-          "
-        />
-      </div>
-      <base-button class="button" text="ОТПРАВИТЬ" @click="sendForm($event)" />
-    </form>
-  </Popup>
+      <base-input
+        class="input"
+        placeholder="Отчество"
+        name="middleName"
+        v-model:inputValue="user.middleName"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('middleName', text);
+          }
+        "
+      />
+    </div>
+    <base-input
+      class="input"
+      type="date"
+      name="birthDate"
+      placeholder="Дата рождения"
+      v-model:inputValue="user.birthDate"
+      @update:errorMessage="
+        (text) => {
+          onErrorMessageUpdate('birthDate', text);
+        }
+      "
+    />
+    <div class="row">
+      <base-input
+        class="input"
+        name="city"
+        placeholder="Город"
+        v-model:inputValue="user.city"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('city', text);
+          }
+        "
+      />
+      <base-input
+        class="input"
+        name="street"
+        placeholder="Улица"
+        v-model:inputValue="user.street"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('street', text);
+          }
+        "
+      />
+      <base-input
+        class="input"
+        name="house"
+        placeholder="Дом"
+        v-model:inputValue="user.house"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('house', text);
+          }
+        "
+      />
+    </div>
+    <base-input
+      class="input"
+      name="cardNumber"
+      placeholder="Номер карты"
+      v-model:inputValue="user.card.number"
+      @update:errorMessage="
+        (text) => {
+          onErrorMessageUpdate('cardNumber', text);
+        }
+      "
+    />
+    <div class="row start">
+      <base-input
+        class="input"
+        placeholder="ММ"
+        name="monthExp"
+        v-model:inputValue="user.card.monthExp"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('monthExp', text);
+          }
+        "
+      /><base-input
+        name="yearExp"
+        v-model:inputValue="user.card.yearExp"
+        placeholder="ГГ"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('yearExp', text);
+          }
+        "
+      />
+      <base-input
+        class="input"
+        placeholder="CVC"
+        name="yearExp"
+        v-model:inputValue="user.card.cvc"
+        @update:errorMessage="
+          (text) => {
+            onErrorMessageUpdate('cvc', text);
+          }
+        "
+      />
+    </div>
+    <base-button class="button" text="ОТПРАВИТЬ" @click="sendForm($event)" />
+  </form>
   <Popup v-if="isSend" @close="closeSendPopup()">Заказ успешно отправлен</Popup>
 </template>
 <script setup>

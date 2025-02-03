@@ -1,66 +1,112 @@
 <template>
-  <div>
-    <nav class="nav-wrapper" v-if="isLoggedIn">
-      <ul class="navigation">
-        <RouterLink class="navigation__item" to="/">Главная</RouterLink>
-        <RouterLink class="navigation__item" to="/product-send"
-          >Отправить заказ</RouterLink
-        >
-        <RouterLink class="navigation__item" to="/product-create"
-          >Создать товар</RouterLink
-        >
-      </ul>
-      <button class="basket" @click="handleBasketOpen()">Корзина</button>
-      <button @click="handleExit()">Выйти</button>
-    </nav>
-    <router-view />
+  <div class="search-wrapper">
+    <Search
+      class="search"
+      v-if="products?.length"
+      :items="products"
+      @update:foundItems="handleFoundItems"
+    />
+  </div>
+  <div class="wrapper">
+    <div v-if="!products?.length" class="loading">Loading&#8230;</div>
+    <div class="flex product">
+      <ProductCard
+        v-for="(product, index) in foundItems"
+        :product="product"
+        @addToBasket="(item) => addToBasket(item)"
+        @click="openProductCard(product.id)"
+      />
+    </div>
+  </div>
+  <div class="empty-search" v-if="!foundItems?.length && !products?.length">
+    Ничего не найдено...
   </div>
 </template>
-
 <script setup>
-import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
-const router = useRouter();
-const isLoggedIn = ref(false);
-const handleBasketOpen = () => {
-  router.push("/basket");
-};
-const handleExit = () => {
-  localStorage.setItem("isLoggedIn", false);
-  router.push("/login");
-};
-onMounted(() => {
-  isLoggedIn.value = localStorage.getItem("isLoggedIn");
-});
-</script>
+import { onMounted, reactive, ref, computed, watch } from "vue";
+import ProductCard from "./ProductCard.vue";
+import Search from "./Search.vue";
+import axios from "axios";
+const foundItems = ref([]);
+const products = ref({});
+const existingProducts = ref([]);
 
+const itemsInBasket = ref([]);
+const initialBasket = ref([]);
+
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+onMounted(() => {
+  existingProducts.value = JSON.parse(localStorage.getItem("products")) || [];
+  fetchData();
+  loadBasket();
+});
+
+const loadBasket = () => {
+  if (localStorage.getItem("basket").length) {
+    const storedBasket = localStorage.getItem("basket");
+    if (storedBasket) {
+      try {
+        initialBasket.value = JSON.parse(storedBasket);
+        itemsInBasket.value = initialBasket.value;
+      } catch (error) {
+        console.error("Ошибка при парсинге данных из localStorage:", error);
+      }
+    }
+  }
+};
+
+const addToBasket = (item) => {
+  const existingItemIndex = itemsInBasket.value.findIndex(
+    (obj) => obj.item.id === item.id
+  );
+
+  if (existingItemIndex !== -1) {
+    itemsInBasket.value[existingItemIndex].count += 1;
+  } else {
+    itemsInBasket.value.push({ item: item, count: 1 });
+  }
+
+  localStorage.setItem("basket", JSON.stringify(itemsInBasket.value));
+};
+const handleFoundItems = (items) => {
+  foundItems.value = items;
+};
+const basketItems = computed(() => {
+  return itemsInBasket.value;
+});
+const openProductCard = (id) => {
+  router.push(`/product/${id}`);
+};
+watch(basketItems, (newVal) => {
+  localStorage.setItem("basket", JSON.stringify(newVal));
+});
+const fetchData = async () => {
+  try {
+    const response = await axios.get("https://fakestoreapi.com/products");
+    products.value = response?.data;
+    foundItems.value = response?.data;
+  } catch (error) {
+    console.error("Ошибка при получении данных:", error);
+  }
+  if (existingProducts.value.length) {
+    foundItems.value = existingProducts.value;
+  }
+};
+</script>
 <style scoped>
 .wrapper {
   display: grid;
   gap: 30px;
 }
-.basket {
-  background-color: #3fa73e;
-  color: #fff;
-}
-.navigation {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  column-gap: 50px;
-}
-.navigation__item {
-  color: #000;
-  font-size: 20px;
-}
-.nav-wrapper {
-  display: flex;
-  justify-content: space-between;
-}
 .flex {
   display: grid;
   gap: 30px;
   grid-template-columns: 1fr 1fr 1fr;
+}
+.product {
+  cursor: pointer;
 }
 .search-wrapper {
   display: flex;

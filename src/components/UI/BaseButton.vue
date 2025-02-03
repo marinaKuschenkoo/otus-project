@@ -3,7 +3,9 @@
 </template>
 <script setup>
 const props = defineProps({
-  text: String,
+  text: {
+    type: String,
+  },
 });
 </script>
 <style scoped>

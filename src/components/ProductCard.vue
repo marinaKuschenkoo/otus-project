@@ -16,26 +16,34 @@
         <div class="product__rating">
           <span
             class="product__rate"
-            :class="product.rating.rate > 4 ? 'green' : 'red'"
-            >{{ product.rating.rate }}</span
+            :class="product.rating?.rate > 4 ? 'green' : 'red'"
+            >{{ product.rating?.rate }}</span
           >
           <span class="product__rating_count"
-            >{{ product.rating.count }} Review</span
+            >{{ product.rating?.count }} Review</span
           >
         </div>
-        <p class="product__price">{{ product.price }} $</p>
+        <p class="product__price">{{ product?.price }} $</p>
       </div>
     </div>
+    <button @click="addToBasket()" class="product__basket">
+      Добавить в корзину
+    </button>
   </div>
 </template>
 
 <script setup>
-defineProps({
+
+const props = defineProps({
   product: {
     type: Object,
     default: {},
   },
 });
+const emit = defineEmits(["addToBasket"]);
+const addToBasket = () => {
+  emit("addToBasket", props.product);
+};
 </script>
 
 <style scoped>
@@ -45,6 +53,13 @@ defineProps({
   width: 100%;
   background-color: #f6f6f6;
   border-radius: 30px;
+  position: relative;
+}
+.product__basket {
+  position: absolute;
+  top: 0;
+  background: #e481f8;
+  color: white;
 }
 .product__image {
   width: 100%;

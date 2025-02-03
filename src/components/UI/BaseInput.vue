@@ -64,6 +64,7 @@ const schema = zod.object({
   city: zod
     .string()
     .min(3, { message: "Название города должно содержать минимум 2 символа" }),
+  search: zod.string(),
   street: zod
     .string()
     .min(3, { message: "Название улицы должно содержать минимум 2 символа" }),
@@ -96,11 +97,11 @@ const schema = zod.object({
     .string()
     .regex(/^\d*$/, { message: "Цена должна содержать только цифры" }),
   productImage: zod.string().url({ message: "Неверный формат URL" }),
-  productCategory: zod
-    .string()
-    .min(2, {
-      message: "Название категории должено содержать больше 2 символов",
-    }),
+  productCategory: zod.string().min(2, {
+    message: "Название категории должено содержать больше 2 символов",
+  }),
+  login: zod.string().min(1, { message: "Логин не может быть пустым" }),
+  password: zod.string().min(1, { message: "Пароль не может быть пустым" }),
 });
 
 const { value, errorMessage } = useField(

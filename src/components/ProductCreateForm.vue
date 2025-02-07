@@ -67,10 +67,9 @@ import BaseInput from "./UI/BaseInput.vue";
 import BaseButton from "./UI/BaseButton.vue";
 import { reactive, computed } from "vue";
 
-import { useRouter } from "vue-router";
-const router = useRouter();
+import { useProductsStore } from "./store/products";
+const { addProduct } = useProductsStore();
 
-const emit = defineEmits(["closeProductCreatePopup", "saveProduct"]);
 const product = reactive({
   id: Math.random().toString(36).substr(2, 9),
   title: null,
@@ -104,13 +103,7 @@ const saveProduct = (e) => {
   if (!isValidate.value) {
     return;
   }
-
-  const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
-  existingProducts.push(product);
-  localStorage.setItem("products", JSON.stringify(existingProducts));
-
-  emit("saveProduct", product);
-  router.push("/");
+  addProduct(product);
 };
 const onErrorMessageUpdate = (field, newErrorMessage) => {
   errorMessage[field] = newErrorMessage;

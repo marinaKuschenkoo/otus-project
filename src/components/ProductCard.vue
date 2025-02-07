@@ -1,38 +1,45 @@
 <template>
   <div class="product">
-    <div
-      class="product__image"
-      :style="{
-        background: `url(${product.image}) no-repeat center / contain`,
-      }"
-    ></div>
-    <div class="product__description">
-      <div class="product__description_text">
-        <span class="product__title">{{ product.title }}</span>
-        <span class="product__info">{{ product.description }}</span>
-      </div>
-      <span class="product__category">{{ product.category }}</span>
-      <div class="product__rating_wrapper">
-        <div class="product__rating">
-          <span
-            class="product__rate"
-            :class="product.rating?.rate > 4 ? 'green' : 'red'"
-            >{{ product.rating?.rate }}</span
-          >
-          <span class="product__rating_count"
-            >{{ product.rating?.count }} Review</span
-          >
+    <div @click.prevent="openProductCard">
+      <div
+        class="product__image"
+        :style="{
+          background: `url(${product.image}) no-repeat center / contain`,
+        }"
+      ></div>
+      <div class="product__description">
+        <div class="product__description_text">
+          <span class="product__title">{{ product.title }}</span>
+          <span class="product__info">{{ product.description }}</span>
         </div>
-        <p class="product__price">{{ product?.price }} $</p>
+        <span class="product__category">{{ product.category }}</span>
+        <div class="product__rating_wrapper">
+          <div class="product__rating">
+            <span
+              class="product__rate"
+              :class="product.rating?.rate > 4 ? 'green' : 'red'"
+              >{{ product.rating?.rate }}</span
+            >
+            <span class="product__rating_count"
+              >{{ product.rating?.count }} Review</span
+            >
+          </div>
+          <p class="product__price">{{ product?.price }} $</p>
+        </div>
       </div>
     </div>
-    <button @click="addToBasket()" class="product__basket">
+    <button @click="addToBasket(product)" class="product__basket">
       Добавить в корзину
     </button>
   </div>
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+import { useProductsStore } from "./store/products";
+const {  addToBasket } = useProductsStore();
 
 const props = defineProps({
   product: {
@@ -40,9 +47,8 @@ const props = defineProps({
     default: {},
   },
 });
-const emit = defineEmits(["addToBasket"]);
-const addToBasket = () => {
-  emit("addToBasket", props.product);
+const openProductCard = () => {
+  router.push(`/product/${props.product?.id}`);
 };
 </script>
 

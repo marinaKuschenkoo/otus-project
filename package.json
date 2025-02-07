@@ -12,6 +12,8 @@
     "@vee-validate/zod": "^4.15.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "pinia": "^2.3.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
     "vee-validate": "^4.15.0",
     "vue": "^3.5.12",
     "vue-cookies": "^1.8.6",

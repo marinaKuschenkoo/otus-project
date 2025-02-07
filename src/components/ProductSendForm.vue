@@ -135,7 +135,12 @@ import BaseInput from "./UI/BaseInput.vue";
 import Popup from "./UI/Popup.vue";
 import BaseButton from "./UI/BaseButton.vue";
 import { reactive, ref, computed } from "vue";
-import axios from "axios";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+import { useProductsStore } from "./store/products";
+const { sendOrder } = useProductsStore();
 
 const emit = defineEmits(["closeProductSendPopup"]);
 const user = reactive({
@@ -167,9 +172,7 @@ const errorMessage = reactive({
   cvc: null,
 });
 const isSend = ref(false);
-const closePopup = () => {
-  emit("closeProductSendPopup");
-};
+
 const isValidate = computed(() => {
   return (
     user.name &&
@@ -188,16 +191,19 @@ const isValidate = computed(() => {
     )
   );
 });
-const sendForm = (e) => {
+const sendForm = async (e) => {
   e.preventDefault();
   if (!isValidate.value) {
     return;
   }
-  axios
-    .post("https://httpbin.org/post", {
-      user: user,
-    })
-    .then(((isSend.value = true), emit("closeProductSendPopup")));
+  const response = await sendOrder(user); // Передаем user в sendOrder
+
+  if (response && response.status === 200) {
+    isSend.value = true; // Успешная отправка
+    emit("closeProductSendPopup"); // Закрываем попап
+  } else {
+    console.error("Ошибка при отправке заказа:", response);
+  }
 };
 
 const onErrorMessageUpdate = (field, newErrorMessage) => {
@@ -205,6 +211,7 @@ const onErrorMessageUpdate = (field, newErrorMessage) => {
 };
 const closeSendPopup = () => {
   isSend.value = false;
+  router.push("/home");
 };
 </script>
 <style scoped>

@@ -24,32 +24,18 @@
 </template>
 <script setup>
 import BaseInput from "./UI/BaseInput.vue";
-import { reactive, ref, computed, watch } from "vue";
-const emit = defineEmits(["update:foundItems"]);
-const props = defineProps({
-  items: {
-    type: Object,
-    default: {},
-  },
-});
+import { reactive, ref, watch } from "vue";
+import { useProductsStore } from "./store/products";
+const { search } = useProductsStore();
+
 const searchValue = ref("");
 const price = reactive({
   priceStart: null,
   priceEnd: null,
 });
 
-const foundItems = computed(() => {
-  if (!props.items) return [];
-  const searchLower = searchValue.value.toLowerCase();
-  return props.items.filter((el) => {
-    const matchesTitle = el.title.toLowerCase().startsWith(searchLower);
-    const matchesPriceStart = !price.priceStart || el.price >= price.priceStart;
-    const matchesPriceEnd = !price.priceEnd || el.price <= price.priceEnd;
-    return matchesTitle && matchesPriceStart && matchesPriceEnd;
-  });
-});
-watch(foundItems, (newValue) => {
-  emit("update:foundItems", newValue);
+watch([searchValue, price], (newValue) => {
+  search(newValue[0], newValue[1]);
 });
 </script>
 <style scoped lang="scss">

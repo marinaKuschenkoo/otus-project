@@ -1,53 +1,68 @@
 <template>
-  <div class="search-wrapper">
-    <Search class="search" v-if="products?.length" :items="products" />
-  </div>
-  <div class="wrapper">
-    <div v-if="!products?.length" class="loading">Loading&#8230;</div>
-    <div class="flex product">
-      <ProductCard
-        v-for="(product, index) in foundProducts"
-        :product="product"
-      />
-    </div>
-  </div>
-  <div class="empty-search" v-if="!foundProducts?.length">
-    Ничего не найдено...
+  <div v-if="isLoggedIn">
+    <nav class="nav-wrapper">
+      <ul class="navigation">
+        <RouterLink class="navigation__item" to="/home">Главная</RouterLink>
+        <RouterLink class="navigation__item" to="/product-send"
+          >Отправить заказ</RouterLink
+        >
+        <RouterLink class="navigation__item" to="/product-create"
+          >Создать товар</RouterLink
+        >
+      </ul>
+      <span class="user">{{ currentUser.name }} {{ currentUser.login }}</span>
+      <button class="basket" @click="handleBasketOpen()">Корзина</button>
+      <button @click="handleExit()">Выйти</button>
+    </nav>
   </div>
 </template>
 <script setup>
-import { onMounted } from "vue";
-import ProductCard from "./ProductCard.vue";
-import Search from "./Search.vue";
+import { useRouter } from "vue-router";
+import { useProductsStore } from "./store/products";
 import { storeToRefs } from "pinia";
 
-import { useProductsStore } from "./store/products";
-const { fetchProducts } = useProductsStore();
-const { products, foundProducts, productsInBasket } = storeToRefs(
-  useProductsStore()
-);
-
-import { useRouter } from "vue-router";
 const router = useRouter();
+const products = useProductsStore();
 
-onMounted(() => {
-  if (!products) {
-    fetchProducts();
-  }
-});
+const { logout } = useProductsStore();
+const { isLoggedIn, currentUser } = storeToRefs(products);
+
+const handleBasketOpen = () => {
+  router.push("/basket");
+};
+const handleExit = () => {
+  logout();
+  router.push("/login");
+};
 </script>
 <style scoped>
 .wrapper {
   display: grid;
   gap: 30px;
 }
+.basket {
+  background-color: #3fa73e;
+  color: #fff;
+  margin-right: 20px;
+}
+.navigation {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  column-gap: 50px;
+}
+.navigation__item {
+  color: #000;
+  font-size: 20px;
+}
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
 .flex {
   display: grid;
   gap: 30px;
   grid-template-columns: 1fr 1fr 1fr;
-}
-.product {
-  cursor: pointer;
 }
 .search-wrapper {
   display: flex;
@@ -56,6 +71,13 @@ onMounted(() => {
 }
 .search {
   width: 100%;
+}
+.user {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 20px;
 }
 .loading {
   position: fixed;

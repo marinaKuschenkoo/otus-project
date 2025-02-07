@@ -1,26 +1,21 @@
 <template>
   <div class="basket__wrapper">
-    <button class="basket__clear" @click="clear()">Oчистить корзину</button>
-    <div v-for="(item, index) in basketItems" :key="index">
+    <button class="basket__clear" @click="clearBasket()">
+      Oчистить корзину
+    </button>
+    <div v-for="(item, index) in productsInBasket" :key="index">
       <basket-item :product="item.item" :count="item.count" />
     </div>
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useProductsStore } from "./store/products";
+
 import BasketItem from "./UI/BasketItem.vue";
 
-const basketItems = ref([]);
-onMounted(() => {
-  if (localStorage.getItem("basket").length) {
-    basketItems.value = JSON.parse(localStorage.getItem("basket"));
-  }
-});
-const clear = () => {
-  localStorage.setItem("basket", []);
-
-  basketItems.value = [];
-};
+const { productsInBasket } = storeToRefs(useProductsStore());
+const { clearBasket } = useProductsStore();
 </script>
 <style scoped>
 .basket__wrapper {

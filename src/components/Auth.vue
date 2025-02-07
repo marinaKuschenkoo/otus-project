@@ -11,6 +11,16 @@
       placeholder="Пароль"
       v-model:inputValue="loginData.password"
     />
+    <base-input
+      name="name"
+      placeholder="Имя"
+      v-model:inputValue="loginData.name"
+    />
+    <base-input
+      name="address"
+      placeholder="Адресс"
+      v-model:inputValue="loginData.address"
+    />
     <base-button @click="handleSubmit" text="Войти" class="button" />
   </div>
 </template>
@@ -19,15 +29,20 @@ import BaseInput from "./UI/BaseInput.vue";
 import BaseButton from "./UI/BaseButton.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useProductsStore } from "./store/products/index";
+
+const { loginUser } = useProductsStore();
 const router = useRouter();
 
 const loginData = ref({
   login: "",
   password: "",
+  name: "",
+  address: "",
 });
 
 const handleSubmit = () => {
-  localStorage.setItem("isLoggedIn", true);
+  loginUser(loginData.value);
   router.push("/home");
 };
 </script>
